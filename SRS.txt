@@ -1,0 +1,81 @@
+Software Requirements Specification (SRS)
+For: Ohun Islam
+Version: 1.0
+Date: [Insert Date]
+1. Introduction
+1.1 Purpose
+The purpose of this document is to define the functional and non-functional requirements for Ohun Islam, a web-based application designed to collate and manage all recordings of the Voice of Islam broadcast on Bond FM 92.9 by the Lagos State Ahmadiyya Jama'at. This document serves as a guide for the development team, stakeholders, and project managers.
+
+1.2 Scope
+Ohun Islam aims to provide a centralized repository for the Voice of Islam broadcasts. Key features include:
+
+Uploading, categorizing, and tagging recordings.
+Searching and filtering recordings by date, topic, or speaker.
+Allowing users to listen online or download recordings.
+Secure access for admins and users.
+This system will follow a microservices architecture to ensure scalability, fault tolerance, and ease of maintenance.
+
+1.3 Definitions, Acronyms, and Abbreviations
+Recording: An audio file of the Voice of Islam broadcast.
+Admin: A user with permissions to manage content and users.
+User: A registered user who can access and interact with the recordings.
+API: Application Programming Interface.
+1.4 References
+NET Microservices: Architecture for Containerized .NET Applications (Book).
+Lucidchart.
+Visio Online.
+1.5 Overview
+This document includes the system’s functional and non-functional requirements, use cases, system models, and constraints.
+
+2. Overall Description
+2.1 Product Perspective
+The Ohun Islam application will be a new system built using a microservices architecture hosted on Docker containers. The system will include:
+
+A frontend web application for users to interact with the platform.
+Backend services for authentication, search, and data management.
+2.2 Product Features
+Recording Management: Upload, edit, delete, and tag recordings.
+Search and Filter: Find recordings by metadata (e.g., date, topic, speaker).
+User Roles: Differentiate between admins and users.
+Streaming and Download: Stream recordings online or download them for offline use.
+2.3 User Classes and Characteristics
+Admin Users: Manage content, handle tags, and moderate user activity.
+Regular Users: Search, listen, and download recordings.
+2.4 Constraints
+Must comply with data storage limits of the hosting provider (e.g., Azure Blob Storage).
+Audio recordings will be stored in a compressed format to optimize storage.
+Internet access is required for both admin and user functionalities.
+3. Specific Requirements
+3.1 Functional Requirements
+3.1.1 User Management
+The system shall allow users to register and log in.
+The system shall allow admins to manage user roles.
+3.1.2 Recording Management
+The system shall allow admins to upload recordings with metadata (e.g., title, date, tags).
+The system shall allow users to search for recordings based on metadata.
+3.1.3 Search and Filter
+The system shall provide a search bar for keyword-based searches.
+The system shall allow users to filter recordings by date, topic, or speaker.
+3.1.4 Playback and Download
+The system shall provide an embedded player for streaming recordings.
+The system shall allow users to download recordings in MP3 format.
+3.2 Non-Functional Requirements
+Performance: The system shall handle 100 concurrent users with minimal latency.
+Scalability: The system shall scale to support an increasing number of recordings and users.
+Security: All user data shall be transmitted over HTTPS.
+Availability: The system shall maintain 99.9% uptime.
+4. System Models
+4.1 Use Case Diagram
+Create a diagram showing:
+
+Admin uploading recordings.
+User searching, streaming, and downloading recordings.
+4.2 Sequence Diagram
+Create a diagram to depict the process of:
+
+User searching for a recording.
+Admin uploading a new recording.
+5. Appendices
+A. Assumptions and Dependencies
+Assumes stable internet connectivity for users.
+Assumes availability of Azure services for hosting and storage.

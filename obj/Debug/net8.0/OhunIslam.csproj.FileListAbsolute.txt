@@ -1,0 +1,7 @@
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.csproj.AssemblyReference.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.AssemblyInfoInputs.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.AssemblyInfo.cs
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.csproj.CoreCompileInputs.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\MY PC\Desktop\Coded\OhunIslam\obj\Debug\net8.0\OhunIslam.MvcApplicationPartsAssemblyInfo.cache

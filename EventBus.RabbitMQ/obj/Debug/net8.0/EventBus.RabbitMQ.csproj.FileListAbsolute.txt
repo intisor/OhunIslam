@@ -1,0 +1,15 @@
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\bin\Debug\net8.0\EventBus.RabbitMQ.deps.json
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\bin\Debug\net8.0\EventBus.RabbitMQ.dll
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\bin\Debug\net8.0\EventBus.RabbitMQ.pdb
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\bin\Debug\net8.0\EventBus.dll
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\bin\Debug\net8.0\EventBus.pdb
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.csproj.AssemblyReference.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.AssemblyInfoInputs.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.AssemblyInfo.cs
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.csproj.CoreCompileInputs.cache
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.D83D059C.Up2Date
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.dll
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\refint\EventBus.RabbitMQ.dll
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\EventBus.RabbitMQ.pdb
+C:\Users\MY PC\Desktop\Coded\OhunIslam\EventBus.RabbitMQ\obj\Debug\net8.0\ref\EventBus.RabbitMQ.dll

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\OhunIslam.WebAPI.props" />
+</Project>

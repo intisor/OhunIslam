@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "CSY1ifDWZOI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\EventBus.RabbitMQ\\EventBus.RabbitMQ.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MY PC\\.nuget\\packages\\rabbitmq.client\\7.0.0\\rabbitmq.client.7.0.0.nupkg.sha512",
+    "C:\\Users\\MY PC\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
+    "C:\\Users\\MY PC\\.nuget\\packages\\system.threading.ratelimiting\\8.0.0\\system.threading.ratelimiting.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

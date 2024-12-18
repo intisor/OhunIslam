@@ -1,0 +1,6 @@
+@OhunIslam.MediaStorage_HostAddress = http://localhost:5055
+
+GET {{OhunIslam.MediaStorage_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

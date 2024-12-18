@@ -1,0 +1,6 @@
+@OhunIslam.Radio_HostAddress = http://localhost:5267
+
+GET {{OhunIslam.Radio_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
