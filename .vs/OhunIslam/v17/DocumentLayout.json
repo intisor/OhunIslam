@@ -3,28 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\ohunislam.webapi\\model\\mediaitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|solutionrelative:ohunislam.webapi\\model\\mediaitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\ohunislam.webapi\\controllers\\mediacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|solutionrelative:ohunislam.webapi\\controllers\\mediacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\ohunislam.webapi\\infrastructure\\mediacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|solutionrelative:ohunislam.webapi\\infrastructure\\mediacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E875A60D-1E7E-4736-99B3-5AB6BF3B6C8D}|EventBus.RabbitMQ\\EventBus.RabbitMQ.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\eventbus.rabbitmq\\eventbusrabbitmq.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E875A60D-1E7E-4736-99B3-5AB6BF3B6C8D}|EventBus.RabbitMQ\\EventBus.RabbitMQ.csproj|solutionrelative:eventbus.rabbitmq\\eventbusrabbitmq.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2FD356DC-1A9B-474B-A8EE-EAF67AAD4A99}|EventBus\\EventBus.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\eventbus\\eventbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2FD356DC-1A9B-474B-A8EE-EAF67AAD4A99}|EventBus\\EventBus.csproj|solutionrelative:eventbus\\eventbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|c:\\users\\my pc\\desktop\\coded\\ohunislam\\ohunislam.webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{47EEE19D-B4D1-49FC-842E-493239D0BFDB}|OhunIslam.WebAPI\\OhunIslam.WebAPI.csproj|solutionrelative:ohunislam.webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F2CA5CB6-51E3-40B4-B8CB-F65C3F469E98}|Solution Items{F2CA5CB6-51E3-40B4-B8CB-F65C3F469E98}|C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{F2CA5CB6-51E3-40B4-B8CB-F65C3F469E98}|Solution Items{F2CA5CB6-51E3-40B4-B8CB-F65C3F469E98}|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 434,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,80 +22,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MediaContext.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Infrastructure\\MediaContext.cs",
-              "RelativeDocumentMoniker": "OhunIslam.WebAPI\\Infrastructure\\MediaContext.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Infrastructure\\MediaContext.cs",
-              "RelativeToolTip": "OhunIslam.WebAPI\\Infrastructure\\MediaContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-13T11:19:01.57Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MediaController.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Controllers\\MediaController.cs",
-              "RelativeDocumentMoniker": "OhunIslam.WebAPI\\Controllers\\MediaController.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Controllers\\MediaController.cs",
-              "RelativeToolTip": "OhunIslam.WebAPI\\Controllers\\MediaController.cs",
-              "ViewState": "AQIAABYAAACAaWZmZmYRwDUAAAAOAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-13T08:46:20.622Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "EventBus.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\EventBus\\EventBus.cs",
-              "RelativeDocumentMoniker": "EventBus\\EventBus.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\EventBus\\EventBus.cs",
-              "RelativeToolTip": "EventBus\\EventBus.cs",
-              "ViewState": "AQIAAAAAAAAAMzMzMzMLwCAAAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-12T10:06:26.529Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "EventBusRabbitMQ.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\EventBus.RabbitMQ\\EventBusRabbitMQ.cs",
-              "RelativeDocumentMoniker": "EventBus.RabbitMQ\\EventBusRabbitMQ.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\EventBus.RabbitMQ\\EventBusRabbitMQ.cs",
-              "RelativeToolTip": "EventBus.RabbitMQ\\EventBusRabbitMQ.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAA8AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-10T00:41:41.625Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MediaItem.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Model\\MediaItem.cs",
-              "RelativeDocumentMoniker": "OhunIslam.WebAPI\\Model\\MediaItem.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Model\\MediaItem.cs*",
-              "RelativeToolTip": "OhunIslam.WebAPI\\Model\\MediaItem.cs*",
-              "ViewState": "AQIAAAEAAAAAMzMzMzMrwAsAAAASAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-09T22:42:37.751Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Program.cs",
-              "RelativeDocumentMoniker": "OhunIslam.WebAPI\\Program.cs",
-              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\OhunIslam.WebAPI\\Program.cs",
-              "RelativeToolTip": "OhunIslam.WebAPI\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAzAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-09T14:14:33.99Z",
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\MY PC\\Desktop\\Coded\\OhunIslam\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAABQAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-12-24T11:16:54.723Z",
               "EditorCaption": ""
             }
           ]

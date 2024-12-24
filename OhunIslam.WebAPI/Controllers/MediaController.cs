@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OhunIslam.WebAPI.Infrastructure;
 using OhunIslam.WebAPI.Model;
 using System.Collections.Generic;
@@ -11,23 +12,23 @@ namespace OhunIslam.WebAPI.Controllers
     public class MediaItemsController : ControllerBase
     {
         private readonly MediaContext _context;
-        private static List<MediaItem> mediaItems = new List<MediaItem>();
         private string storagePath = Path.Combine(Directory.GetCurrentDirectory(), "AudioFiles");
 
         public MediaItemsController(MediaContext context)
         {
             _context = context;
         }
+
         [HttpGet]
-        public ActionResult<IEnumerable<MediaItem>> Get()
+        public async Task<ActionResult<IEnumerable<MediaItem>>> Get()
         {
-            return Ok(mediaItems);
+            return Ok(await _context.MediaItem.ToListAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<MediaItem> Get(int id)
+        public async Task<ActionResult<MediaItem>> Get(int id)
         {
-            var item = mediaItems.FirstOrDefault(m => m.MediaId == id);
+            var item = await _context.MediaItem.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -36,12 +37,12 @@ namespace OhunIslam.WebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<MediaItem> Post([FromForm] MediaItemForm mediaItemForm)
+        public async Task<ActionResult<MediaItem>> Post([FromForm] MediaItemForm mediaItemForm)
         {
             var filePath = Path.Combine(storagePath, mediaItemForm.MediaFile.FileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                mediaItemForm.MediaFile.CopyTo(stream);
+                await mediaItemForm.MediaFile.CopyToAsync(stream);
             }
             var mediaItem = new MediaItem
             {
@@ -49,47 +50,61 @@ namespace OhunIslam.WebAPI.Controllers
                 MediaDescription = mediaItemForm.MediaDescription,
                 MediaLecturer = mediaItemForm.MediaLecturer,
                 DateIssued = DateTime.Now,
-                MediaPath = filePath,
-                MediaId = mediaItems.Count + 1
+                MediaPath = filePath
             };
             _context.MediaItem.Add(mediaItem);
-            _context.SaveChanges();
-            return Ok(mediaItem);
-            //return CreatedAtAction(nameof(Get), new { id = mediaItem.MediaId }, mediaItem);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = mediaItem.MediaId }, mediaItem);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] MediaItem mediaItem)
+        public async Task<IActionResult> Put(int id, [FromBody] MediaItem mediaItem)
         {
-            var item = mediaItems.FirstOrDefault(m => m.MediaId == id);
-            if (item == null)
+            if (id != mediaItem.MediaId)
             {
-                return NotFound();
+                return BadRequest();
             }
-            item.MediaTitle = mediaItem.MediaTitle;
-            item.MediaDescription = mediaItem.MediaDescription;
-            item.MediaLecturer = mediaItem.MediaLecturer;
-            item.MediaPath = mediaItem.MediaPath;
-            item.DateIssued = mediaItem.DateIssued;
+
+            _context.Entry(mediaItem).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MediaItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var item = mediaItems.FirstOrDefault(m => m.MediaId == id);
+            var item = await _context.MediaItem.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
             }
-            mediaItems.Remove(item);
+
+            _context.MediaItem.Remove(item);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
         [HttpGet("stream/{id}")]
         public async Task<IActionResult> StreamAudio(int id)
         {
-            var item = mediaItems.FirstOrDefault(m => m.MediaId == id);
+            var item = await _context.MediaItem.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -109,6 +124,12 @@ namespace OhunIslam.WebAPI.Controllers
             memory.Position = 0;
             return File(memory, "audio/mpeg", Path.GetFileName(filePath));
         }
+
+        private bool MediaItemExists(int id)
+        {
+            return _context.MediaItem.Any(e => e.MediaId == id);
+        }
+
         public class MediaItemForm
         {
             public string MediaTitle { get; set; }
