@@ -12,6 +12,7 @@ namespace OhunIslam.Radio.Controllers
     public class RadioController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly RabbitMQService _rabbitMQService;
         public RadioController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -32,6 +33,7 @@ namespace OhunIslam.Radio.Controllers
                 }
 
                 var stream = await response.Content.ReadAsStreamAsync();
+                _rabbitMQService.PublishToWebAPI($"Radio stream started at :-  {DateTime.Now}");
 
                 return File(stream, "audio/mpeg");
             }

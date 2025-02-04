@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OhunIslam.WebAPI.Infrastructure;
 using OhunIslam.WebAPI.Model;
+using OhunIslam.WebAPI.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,7 @@ namespace OhunIslam.WebAPI.Controllers
     public class MediaItemsController : ControllerBase
     {
         private readonly MediaContext _context;
+        private readonly WebRabbitMQService _webRabbitMQService
         private string storagePath = Path.Combine(Directory.GetCurrentDirectory(), "AudioFiles");
 
         public MediaItemsController(MediaContext context)
@@ -33,6 +35,7 @@ namespace OhunIslam.WebAPI.Controllers
             {
                 return NotFound();
             }
+            _webRabbitMQService.Publish($"Media item retrieved at :-  {DateTime.Now}");
             return Ok(item);
         }
 
@@ -54,6 +57,7 @@ namespace OhunIslam.WebAPI.Controllers
             };
             _context.MediaItem.Add(mediaItem);
             await _context.SaveChangesAsync();
+            _webRabbitMQService.Publish($"Media item created at :-  {DateTime.Now}");
             return CreatedAtAction(nameof(Get), new { id = mediaItem.MediaId }, mediaItem);
         }
 
@@ -97,7 +101,7 @@ namespace OhunIslam.WebAPI.Controllers
 
             _context.MediaItem.Remove(item);
             await _context.SaveChangesAsync();
-
+            _webRabbitMQService.Publish($"Media item deleted at :-  {DateTime.Now}");
             return NoContent();
         }
 
@@ -122,6 +126,7 @@ namespace OhunIslam.WebAPI.Controllers
                 await stream.CopyToAsync(memory);
             }
             memory.Position = 0;
+            _webRabbitMQService.Publish($"Media item streamed at :-  {DateTime.Now}");
             return File(memory, "audio/mpeg", Path.GetFileName(filePath));
         }
 
