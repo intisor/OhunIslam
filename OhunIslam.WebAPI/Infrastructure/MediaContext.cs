@@ -32,8 +32,7 @@ namespace OhunIslam.WebAPI.Infrastructure
         public MediaContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MediaContext>();
-            optionsBuilder.UseMySql("server=127.0.0.1;port=1234;database=OhunIslam;user=root;password=Mawupego777#",
-                 new MySqlServerVersion(new Version(8, 0, 1)));
+            optionsBuilder.UseSqlServer("Server=localhost;Database=OhunIslam;User Id=INTITECH;password=Mawupego777#;TrustServerCertificate=True;");
 
             return new MediaContext(optionsBuilder.Options);
         }

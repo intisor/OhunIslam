@@ -9,16 +9,13 @@ namespace OhunIslam.Radio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RadioController : ControllerBase
+    public class RadioController(IHttpClientFactory httpClientFactory) : ControllerBase
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly RabbitMQService _rabbitMQService;
-        public RadioController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+        // private readonly RabbitMQService _rabbitMQService;
+
         [HttpGet("play")]
-        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> PlayRadio()
+        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> Play()
         {
             string streamUrl = "https://go.webgateready.com/bondfm";
 
@@ -33,7 +30,7 @@ namespace OhunIslam.Radio.Controllers
                 }
 
                 var stream = await response.Content.ReadAsStreamAsync();
-                _rabbitMQService.PublishToWebAPI($"Radio stream started at :-  {DateTime.Now}");
+                // _rabbitMQService.PublishToWebAPI($"Radio stream started at :-  {DateTime.Now}");
 
                 return File(stream, "audio/mpeg");
             }

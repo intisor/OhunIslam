@@ -3,11 +3,11 @@ using OhunIslam.WebAPI.Infrastructure;
 using OhunIslam.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// mysql - SPoDUPw
+// MsSQL - SDUP
 // Add services to the container.
 builder.Services.AddDbContext<MediaContext>(option =>
-           option.UseMySql(builder.Configuration.GetConnectionString("ConnectionString"),
-           new MySqlServerVersion(new Version(8, 0,1))));
+           option.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
 builder.Services.AddControllers();
 builder.Services.AddSingleton<WebRabbitMQService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
