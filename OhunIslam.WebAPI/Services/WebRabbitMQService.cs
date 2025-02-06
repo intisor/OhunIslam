@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 
 namespace OhunIslam.WebAPI.Services;
 
-public class WebRabbitMQService : IDisposable
+public class WebRabbitMQService : BackgroundService, IDisposable
 {
     private readonly Task<IConnection> _connection;
     private readonly Task<IChannel> _channel;
@@ -44,5 +44,11 @@ public class WebRabbitMQService : IDisposable
     {
        _channel.Result.CloseAsync();
        _connection.Result.CloseAsync();
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+       ConsumeFromRadio();
+         return Task.CompletedTask;
     }
 }

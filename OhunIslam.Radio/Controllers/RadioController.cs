@@ -3,16 +3,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NAudio.Wave;
+
 
 namespace OhunIslam.Radio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RadioController(IHttpClientFactory httpClientFactory) : ControllerBase
+    public class RadioController : ControllerBase
     {
-        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-        // private readonly RabbitMQService _rabbitMQService;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly RabbitMQService _rabbitMQService;
+
+        public RadioController(IHttpClientFactory httpClientFactory, RabbitMQService rabbitMQService)
+        {
+            _httpClientFactory = httpClientFactory;
+            _rabbitMQService = rabbitMQService;
+        }
 
         [HttpGet("play")]
         public async Task<Microsoft.AspNetCore.Mvc.ActionResult> Play()
@@ -30,7 +36,7 @@ namespace OhunIslam.Radio.Controllers
                 }
 
                 var stream = await response.Content.ReadAsStreamAsync();
-                // _rabbitMQService.PublishToWebAPI($"Radio stream started at :-  {DateTime.Now}");
+                _rabbitMQService.PublishToWebAPI($"Radio stream started at :-  {DateTime.Now}");
 
                 return File(stream, "audio/mpeg");
             }

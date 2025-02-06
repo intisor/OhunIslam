@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Connections;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-internal class RabbitMQService : IDisposable
+public class RabbitMQService : IDisposable
 {
     private readonly Task<IConnection> _connection;
     private readonly Task<IChannel> _channel;
@@ -36,7 +36,7 @@ internal class RabbitMQService : IDisposable
             return Task.CompletedTask;
         };
 
-        _channel.Result.BasicConsumeAsync("queue_WebAPI",true, consumer);
+        await _channel.Result.BasicConsumeAsync("queue_WebAPI",true, consumer);
     } 
     public void Dispose()
     {
