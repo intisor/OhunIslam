@@ -9,10 +9,11 @@ public class RabbitMQService : IDisposable
     private readonly Task<IConnection> _connection;
     private readonly Task<IChannel> _channel;
 
-    public RabbitMQService()
+    public RabbitMQService(RabbitMQ.Client.IConnectionFactory connectionFactory)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
-        _connection = factory.CreateConnectionAsync();
+        // var factory = new ConnectionFactory() { HostName = "localhost"
+        //                                          };
+        _connection = connectionFactory.CreateConnectionAsync();
         _channel = _connection.Result.CreateChannelAsync();
         _channel.Result.QueueDeclareAsync("queue_radio", false, false, false, null);
         _channel.Result.QueueDeclareAsync("queue_WebAPI", false, false, false, null);

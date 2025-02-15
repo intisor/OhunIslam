@@ -13,10 +13,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IConnectionFactory>(sp => new ConnectionFactory
 {
-    HostName = builder.Configuration["RabbitMQ:HostName"] ?? "rabbitmq",
-    UserName = builder.Configuration["RabbitMQ:UserName"] ?? "admin",
-    Password = builder.Configuration["RabbitMQ:Password"] ?? "admin",
-    ConsumerDispatchConcurrency = 1
+    HostName = builder.Configuration["RabbitMQ:HostName"] ?? "localhost",
+    UserName = builder.Configuration["RabbitMQ:UserName"] ?? "guest",
+    Password = builder.Configuration["RabbitMQ:Password"] ?? "guest",
+    Port = 5672
 });
 builder.Services.AddSingleton<WebRabbitMQService>();
 builder.Services.AddHostedService<WebRabbitMQService>();
@@ -28,11 +28,11 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
 app.UseHttpsRedirection();
 
