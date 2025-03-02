@@ -8,11 +8,18 @@ namespace OhunIslam.WebAPI.Infrastructure
     {
         public MediaContext(DbContextOptions<MediaContext> options) : base(options)
         { }
-        public DbSet<MediaItem> MediaItem { get; set;}
+        public DbSet<MediaItem> MediaItem { get; set; }
+        public DbSet<ConsumedMessage> ConsumedMessages { get; set; } 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+             modelBuilder.Entity<ConsumedMessage>()
+                .HasIndex(r => r.StreamStartTime);
+                
+            modelBuilder.Entity<ConsumedMessage>()
+                .HasIndex(r => r.StreamStatus);
+
             modelBuilder.Entity<MediaItem>(entity =>
             {
                 entity.ToTable("MediaItems");
@@ -26,13 +33,13 @@ namespace OhunIslam.WebAPI.Infrastructure
         }
 
     }
-  
+
     public class MediaContextFactory : IDesignTimeDbContextFactory<MediaContext>
     {
         public MediaContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MediaContext>();
-            optionsBuilder.UseSqlServer("Server=localhost;Database=OhunIslam;User Id=INTITECH;password=Mawupego777#;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=INTITECH;Database=OhunIslam;Integrated Security=True;TrustServerCertificate=True;Encrypt=False;");
 
             return new MediaContext(optionsBuilder.Options);
         }

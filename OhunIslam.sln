@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OhunIslam.WebAPI", "OhunIslam.WebAPI\OhunIslam.WebAPI.csproj", "{47EEE19D-B4D1-49FC-842E-493239D0BFDB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OhunIslam.Shared", "OhunIslam.Shared\OhunIslam.Shared.csproj", "{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OhunIslam.Radio", "OhunIslam.Radio\OhunIslam.Radio.csproj", "{47GHT19D-A2D1-49FC-842E-493232F0BFDB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2CA5CB6-51E3-40B4-B8CB-F65C3F469E98}"

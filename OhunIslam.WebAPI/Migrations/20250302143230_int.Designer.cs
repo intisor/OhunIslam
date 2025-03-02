@@ -12,8 +12,8 @@ using OhunIslam.WebAPI.Infrastructure;
 namespace OhunIslam.WebAPI.Migrations
 {
     [DbContext(typeof(MediaContext))]
-    [Migration("20250204213015_InitailCreate")]
-    partial class InitailCreate
+    [Migration("20250302143230_int")]
+    partial class @int
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,42 @@ namespace OhunIslam.WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("OhunIslam.WebAPI.Model.ConsumedMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MediaTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReceivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("StreamDuration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("StreamStartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StreamStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StreamStartTime");
+
+                    b.HasIndex("StreamStatus");
+
+                    b.ToTable("ConsumedMessages");
+                });
 
             modelBuilder.Entity("OhunIslam.WebAPI.Model.MediaItem", b =>
                 {
