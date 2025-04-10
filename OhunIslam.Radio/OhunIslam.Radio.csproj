@@ -11,6 +11,8 @@
 </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\OhunIslam.Shared\OhunIslam.Shared.csproj" />
+    <PackageReference Include="MassTransit" Version="8.2.5" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
     <!-- <PackageReference Include="NAudio" Version="2.2.1" /> -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

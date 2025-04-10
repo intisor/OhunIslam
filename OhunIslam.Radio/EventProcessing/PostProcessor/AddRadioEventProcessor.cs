@@ -1,6 +1,7 @@
 // ScopeFactory is required to be injected
 // BackgroundServices are using ScopeFactory to perform a task in background
 // This processor will be executed in a background service to add a post that comes from PostService
+using OhunIslam.Radio.Services;
 using OhunIslam.Shared.Models;
 
 public class AddRadioEventProcessor
@@ -28,7 +29,7 @@ public class AddRadioEventProcessor
             if (streamingStatus != null)
             {
                 using var scope = _serviceScopeFactory.CreateScope();
-                var rabbitMQService = scope.ServiceProvider.GetRequiredService<RabbitMQService>();
+                var rabbitMQService = scope.ServiceProvider.GetRequiredService<MassTransitService>();
                 rabbitMQService.PublishStreamingStatus(streamingStatus);
                 _logger.LogInformation(
                     "Successfully processed streaming status - Title: {MediaTitle}, Status: {Status}",

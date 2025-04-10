@@ -1,171 +1,80 @@
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
-using System.Threading;
-using System.Threading.Tasks;
-using OhunIslam.WebAPI.EventProcessing.PostProcessor;
-using OhunIslam.WebAPI.Infrastructure;
+using MassTransit;
+using OhunIslam.WebAPI.Services;
 
-public class RadioMessageSubscriber : BackgroundService
+namespace OhunIslam.Radio.Services
 {
-    private readonly IConfiguration _configuration;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IConnectionFactory _connectionFactory;
-    private readonly ILogger<RadioMessageSubscriber> _logger;
-    private IConnection _connection;
-    private IModel _channel;
-    private const string ExchangeName = "OhunIslam";
-    private const string QueueName = "queue_radio";
-    private const string RoutingKey = "RadioKey";
-    private const int RetryIntervalSeconds = 10;
-
-    public RadioMessageSubscriber(
-        IConfiguration configuration, 
-        IConnectionFactory connectionFactory, 
-        IServiceScopeFactory serviceScopeFactory,
-        ILogger<RadioMessageSubscriber> logger)
+    public class RadioMessageSubscriber : BackgroundService
     {
-        _configuration = configuration;
-        _connectionFactory = connectionFactory;
-        _serviceScopeFactory = serviceScopeFactory;
-        _logger = logger;
-    }
+        private readonly IBusControl _busControl;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger<MassTSConsumer> _logger;
+        private readonly IConfiguration _configuration;
 
-    private bool TryConnectToRabbitMQ()
-    {
-        try
+        public RadioMessageSubscriber(
+            IConfiguration configuration,
+            IServiceScopeFactory serviceScopeFactory,
+            ILogger<MassTSConsumer> logger)
         {
-            if (_connection?.IsOpen == true && _channel?.IsOpen == true)
+            _configuration = configuration;
+            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
+
+            // Configure MassTransit bus
+            _busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                return true;
-            }
+                cfg.Host(_configuration["RabbitMQ:Host"] ?? "localhost", h =>
+                {
+                    h.Username(_configuration["RabbitMQ:Username"] ?? "guest");
+                    h.Password(_configuration["RabbitMQ:Password"] ?? "guest");
+                });
 
-            // Clean up existing connections if any
-            _channel?.Dispose();
-            _connection?.Dispose();
+                cfg.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(10))); // Retry every 10s, 5 attempts
 
-            _logger.LogInformation("Attempting to connect to RabbitMQ...");
-            _connection = _connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
-
-            _channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct, durable: true);
-            _channel.QueueDeclare(QueueName, durable: true, exclusive: false, autoDelete: false);
-            _channel.QueueBind(QueueName, ExchangeName, RoutingKey);
-            
-            _logger.LogInformation("Successfully connected to RabbitMQ");
-            return true;
+                cfg.ReceiveEndpoint("radio_streaming_queue", e =>
+                {
+                    e.Durable = true;
+                    e.AutoDelete = false;
+                    e.Consumer(() => new MassTSConsumer(serviceScopeFactory, logger));
+                });
+            });
         }
-        catch (BrokerUnreachableException ex)
-        {
-            _logger.LogWarning($"Failed to connect to RabbitMQ: {ex.Message}. Will retry in {RetryIntervalSeconds} seconds.");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Unexpected error connecting to RabbitMQ: {ex.Message}");
-            return false;
-        }
-    }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.LogInformation($"[{DateTime.Now}] Starting RadioMessageSubscriber service");
-        while (!stoppingToken.IsCancellationRequested)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if (!TryConnectToRabbitMQ())
-            {
-                _logger.LogWarning($"[{DateTime.Now}] Failed to connect to RabbitMQ. Retrying in {RetryIntervalSeconds} seconds...");
-                await Task.Delay(TimeSpan.FromSeconds(RetryIntervalSeconds), stoppingToken);
-                continue;
-            }
-
+            _logger.LogInformation($"[{DateTime.Now}] Starting RadioMessageSubscriber service");
             try
             {
-                _logger.LogInformation($"[{DateTime.Now}] Setting up message consumer for queue: {QueueName}");
-                var consumer = new EventingBasicConsumer(_channel);
-                consumer.Received += async (sender, eventArgs) =>
-                {
-                    try
-                    {
-                        var body = eventArgs.Body.ToArray();
-                        var message = Encoding.UTF8.GetString(body);
-                        _logger.LogInformation($"[{DateTime.Now}] Received message: {message}");
-                        _logger.LogInformation($"[{DateTime.Now}] Message properties - Exchange: {eventArgs.Exchange}, RoutingKey: {eventArgs.RoutingKey}");
-
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var dbContext = scope.ServiceProvider.GetRequiredService<MediaContext>();
-
-                        var consumedMessage = new OhunIslam.WebAPI.Model.ConsumedMessage
-                        {
-                            MessageContent = message,
-                            ReceivedAt = DateTime.Now
-                        };
-                        await dbContext.ConsumedMessages.AddAsync(consumedMessage);
-                        await dbContext.SaveChangesAsync();
-                        var streamingStatus = System.Text.Json.JsonSerializer.Deserialize<OhunIslam.Shared.Models.RadioStreamingStatus>(message);
-
-                        var mediaItem = new OhunIslam.WebAPI.Model.MediaItem
-                        {
-                            MediaTitle = streamingStatus.MediaTitle,
-                            DateIssued = streamingStatus.StreamStartTime,
-                            MediaDescription = $"Stream {streamingStatus.StreamStatus} at {streamingStatus.StreamStartTime}, Duration: {streamingStatus.StreamDuration}"
-                        };
-
-                        await dbContext.MediaItem.AddAsync(mediaItem);
-                        await dbContext.SaveChangesAsync();
-                        _logger.LogInformation($"[{DateTime.Now}] Stored streaming status in database for: {streamingStatus.MediaTitle}");
-
-                        var processor = scope.ServiceProvider.GetRequiredService<AddRadioEventProcessor>();
-                        await processor.ProcessAddRadioEvent(message);
-
-                        _channel.BasicAck(eventArgs.DeliveryTag, multiple: false);
-                        _logger.LogInformation($"[{DateTime.Now}] Successfully processed and acknowledged message");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"[{DateTime.Now}] Error processing message: {ex.Message}");
-                        _logger.LogError($"[{DateTime.Now}] Stack trace: {ex.StackTrace}");
-                        // Reject the message and requeue it
-                        _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
-                    }
-                };
-
-                _logger.LogInformation($"[{DateTime.Now}] Starting to consume messages from queue: {QueueName}");
-                _channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
-
-                await Task.Delay(Timeout.Infinite, stoppingToken);
+                await _busControl.StartAsync(stoppingToken);
+                _logger.LogInformation($"[{DateTime.Now}] MassTransit bus started, consuming from radio_streaming_queue");
+                await Task.Delay(Timeout.Infinite, stoppingToken); // Keep running until stopped
             }
             catch (Exception ex)
             {
-                _logger.LogError($"[{DateTime.Now}] Error in message consumer: {ex.Message}");
-                await Task.Delay(TimeSpan.FromSeconds(RetryIntervalSeconds), stoppingToken);
+                _logger.LogError(ex, $"[{DateTime.Now}] Error starting MassTransit bus: {ex.Message}");
+                throw;
             }
         }
-    }
-    public override async Task StopAsync(CancellationToken stoppingToken)
-    {
-        try
+
+        public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Stopping RabbitMQ subscriber");
-            _channel?.Close();
-            _connection?.Close();
+            _logger.LogInformation("Stopping RadioMessageSubscriber");
+            try
+            {
+                await _busControl.StopAsync(stoppingToken);
+                _logger.LogInformation("MassTransit bus stopped");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error during shutdown: {ex.Message}");
+            }
             await base.StopAsync(stoppingToken);
         }
-        catch (Exception ex)
+
+        public override void Dispose()
         {
-            _logger.LogError($"Error during shutdown: {ex.Message}");
+            _busControl?.Stop();
+            base.Dispose();
         }
     }
 
-    public override void Dispose()
-    {
-        _channel?.Dispose();
-        _connection?.Dispose();
-        base.Dispose();
-    }
 }

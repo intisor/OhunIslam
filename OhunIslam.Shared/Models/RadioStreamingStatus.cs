@@ -1,10 +1,18 @@
 namespace OhunIslam.Shared.Models
 {
-    public class RadioStreamingStatus 
+    public enum StreamStatus
     {
-        public string MediaTitle { get; set; }
+        Started,
+        Stopped,
+        Error,
+        Playing
+    }
+
+    public class RadioStreamingStatus
+    {
+        public string? MediaTitle { get; set; }
         public DateTime StreamStartTime { get; set; }
-        public string StreamStatus { get; set; } // e.g., "Started", "Stopped"
+        public StreamStatus StreamStatus { get; set; }
         public TimeSpan StreamDuration { get; set; }
     }
 }

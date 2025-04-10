@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using OhunIslam.Radio.Services;
 using OhunIslam.Shared.Models;
-using System.IO;
-using System.Threading.Tasks;
 namespace OhunIslam.Radio.Controllers
 {
     [ApiController]
@@ -9,73 +8,86 @@ namespace OhunIslam.Radio.Controllers
     public class RadioController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly RabbitMQService _rabbitMQService;
+        //private readonly RabbitMQService _rabbitMQService;
+        private readonly MassTransitService _massTransitService;
+        private readonly ILogger<RadioController> _logger;
 
-        public RadioController(IHttpClientFactory httpClientFactory, RabbitMQService rabbitMQService)
+        public RadioController(IHttpClientFactory httpClientFactory,ILogger<RadioController> logger, MassTransitService massTransitService)
         {
             _httpClientFactory = httpClientFactory;
-            _rabbitMQService = rabbitMQService;
+            //_rabbitMQService = rabbitMQService;
+            _logger = logger;
+            _massTransitService = massTransitService;
         }
 
         [HttpGet("play")]
-        public async Task<Microsoft.AspNetCore.Mvc.ActionResult> Play()
+        public async Task<IActionResult> Play()
         {
             string streamUrl = "https://go.webgateready.com/bondfm";
-            Console.WriteLine("=== Radio Stream Connection Attempt ====");
-            Console.WriteLine($"[{DateTime.Now}] Starting connection to stream");
-            Console.WriteLine($"[{DateTime.Now}] Stream URL: {streamUrl}");
+            _logger.LogInformation("=== Radio Stream Connection Attempt ====");
+            _logger.LogInformation($"[{DateTime.Now}] Starting connection to stream");
+            _logger.LogInformation($"[{DateTime.Now}] Stream URL: {streamUrl}");
 
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
-                // httpClient.Timeout = TimeSpan.FromSeconds(30);
-
                 var response = await httpClient.GetAsync(streamUrl, HttpCompletionOption.ResponseHeadersRead);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("=== Radio Stream Connection Failed ====");
-                    Console.WriteLine($"[{DateTime.Now}] Connection failed with status code: {response.StatusCode}");
-                    Console.WriteLine($"[{DateTime.Now}] Response reason phrase: {response.ReasonPhrase}");
+                    _logger.LogError("=== Radio Stream Connection Failed ====");
+                    _logger.LogError($"[{DateTime.Now}] Connection failed with status code: {response.StatusCode}");
+                    _logger.LogError($"[{DateTime.Now}] Response reason phrase: {response.ReasonPhrase}");
                     return StatusCode((int)response.StatusCode, "Failed to verify the audio stream.");
                 }
 
-                Console.WriteLine("=== Radio Stream Connection Successful ====");
-                Console.WriteLine($"[{DateTime.Now}] Successfully verified stream availability");
-                Console.WriteLine($"[{DateTime.Now}] Content type: {response.Content.Headers.ContentType}");
+                _logger.LogInformation("=== Radio Stream Connection Successful ====");
+                _logger.LogInformation($"[{DateTime.Now}] Successfully verified stream availability");
+                _logger.LogInformation($"[{DateTime.Now}] Content type: {response.Content.Headers.ContentType}");
 
-                // var stream = await response.Content.ReadAsStreamAsync();
-
-                _rabbitMQService.PublishStreamingStatus(new RadioStreamingStatus
+                var streamingStatus = new RadioStreamingStatus
                 {
                     MediaTitle = "Bond FM Radio",
-                    StreamStatus = "Playing",
-                    StreamStartTime = DateTime.UtcNow
-                });
+                    StreamStatus = StreamStatus.Started,
+                    StreamStartTime = DateTime.UtcNow,
+                    StreamDuration = TimeSpan.Zero
+                };
+
+                _logger.LogInformation("Publishing streaming status: {@StreamingStatus}", streamingStatus);
+                await _massTransitService.PublishStreamingStatus(streamingStatus);
+                _logger.LogInformation("Successfully published streaming status");
+
+                await _massTransitService.PublishStatsUpdate(streamingStatus);
+                _logger.LogInformation("Successfully published stats update");
 
                 return Ok(new
                 {
                     mediaTitle = "Bond FM Radio",
                     streamUrl = streamUrl,
-                    status = "Available",
+                    status = "Started",
                     contentType = response.Content.Headers.ContentType?.ToString(),
                     message = "Stream is available. Use the streamUrl in an audio player to listen."
                 });
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("=== Radio Stream Error ====");
-                Console.WriteLine($"[{DateTime.Now}] Error type: {ex.GetType().Name}");
-                Console.WriteLine($"[{DateTime.Now}] Error message: {ex.Message}");
-                Console.WriteLine($"[{DateTime.Now}] Stack trace: {ex.StackTrace}");
-                Console.WriteLine($"[{DateTime.Now}] Inner exception: {ex.InnerException?.Message ?? "None"}");
+                _logger.LogError("=== Radio Stream Error ====");
+                _logger.LogError($"[{DateTime.Now}] Error type: {ex.GetType().Name}");
+                _logger.LogError($"[{DateTime.Now}] Error message: {ex.Message}");
+                _logger.LogError($"[{DateTime.Now}] Stack trace: {ex.StackTrace}");
+                _logger.LogError($"[{DateTime.Now}] Inner exception: {ex.InnerException?.Message ?? "None"}");
 
-                _rabbitMQService.PublishStreamingStatus(new RadioStreamingStatus
+                var errorStatus = new RadioStreamingStatus
                 {
                     MediaTitle = "Bond FM Radio",
-                    StreamStatus = "Error",
+                    StreamStatus = StreamStatus.Error,
                     StreamStartTime = DateTime.UtcNow
-                });
+                };
+
+                _logger.LogInformation("Publishing error streaming status: {@ErrorStatus}", errorStatus);
+                await _massTransitService.PublishStreamingStatus(errorStatus);
+                _logger.LogInformation("Successfully published error streaming status");
+
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }

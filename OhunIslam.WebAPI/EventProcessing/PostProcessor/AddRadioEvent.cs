@@ -10,10 +10,12 @@ using OhunIslam.WebAPI.Model;
 public class AddRadioEvent
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<AddRadioEvent> _logger;
 
-    public AddRadioEvent(IServiceScopeFactory serviceScopeFactory)
+    public AddRadioEvent(IServiceScopeFactory serviceScopeFactory, ILogger<AddRadioEvent> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
     public async Task ProcessAddRadioEvent(string message)
@@ -24,17 +26,17 @@ public class AddRadioEvent
             {
                 var mediaContext = scope.ServiceProvider.GetRequiredService<MediaContext>();
                 var radioItem = JsonSerializer.Deserialize<MediaItem>(message);
-                
+
                 if (radioItem != null)
                 {
                     await mediaContext.MediaItem.AddAsync(radioItem);
                     await mediaContext.SaveChangesAsync();
-                    Console.WriteLine($"Radio item {radioItem.MediaTitle} has been added to the database.");
+                    _logger.LogInformation($"Radio item {radioItem.MediaTitle} has been added to the database.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error processing radio message: {ex.Message}");
+                _logger.LogError($"Error processing radio message: {ex.Message}");
                 throw;
             }
         }

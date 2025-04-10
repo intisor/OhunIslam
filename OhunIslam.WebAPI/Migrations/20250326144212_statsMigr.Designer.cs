@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OhunIslam.WebAPI.Infrastructure;
 
@@ -11,9 +12,11 @@ using OhunIslam.WebAPI.Infrastructure;
 namespace OhunIslam.WebAPI.Migrations
 {
     [DbContext(typeof(MediaContext))]
-    partial class MediaContextModelSnapshot : ModelSnapshot
+    [Migration("20250326144212_statsMigr")]
+    partial class statsMigr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace OhunIslam.WebAPI.Migrations
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnType("datetime2");
 
-                    b.ToTable("StreamStatsUpdate");
+                    b.ToTable("StatsItems");
                 });
 
             modelBuilder.Entity("OhunIslam.WebAPI.Model.ConsumedMessage", b =>
@@ -40,9 +43,11 @@ namespace OhunIslam.WebAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MediaTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MessageContent")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ReceivedAt")
@@ -54,12 +59,15 @@ namespace OhunIslam.WebAPI.Migrations
                     b.Property<DateTime>("StreamStartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StreamStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("StreamStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("StreamStartTime");
+
+                    b.HasIndex("StreamStatus");
 
                     b.ToTable("ConsumedMessages");
                 });
@@ -76,45 +84,24 @@ namespace OhunIslam.WebAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MediaDescription")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaLecturer")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaPath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MediaId");
 
                     b.ToTable("MediaItems", (string)null);
-                });
-
-            modelBuilder.Entity("OhunIslam.WebAPI.Model.StreamStats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MessageContent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReceivedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalStreamsToday")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StatsItems");
                 });
 #pragma warning restore 612, 618
         }

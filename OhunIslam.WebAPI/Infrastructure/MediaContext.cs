@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using OhunIslam.Shared.Models;
 using OhunIslam.WebAPI.Model;
 
 namespace OhunIslam.WebAPI.Infrastructure
@@ -11,20 +12,21 @@ namespace OhunIslam.WebAPI.Infrastructure
         public DbSet<MediaItem> MediaItem { get; set; }
         public DbSet<ConsumedMessage> ConsumedMessages { get; set; } 
 
+        public DbSet<StreamStats> StatsItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-             modelBuilder.Entity<ConsumedMessage>()
-                .HasIndex(r => r.StreamStartTime);
-                
+            modelBuilder.Entity<StreamStatsUpdate>()
+                .HasNoKey();
             modelBuilder.Entity<ConsumedMessage>()
-                .HasIndex(r => r.StreamStatus);
+                .HasIndex(r => r.Id);
 
             modelBuilder.Entity<MediaItem>(entity =>
             {
                 entity.ToTable("MediaItems");
                 entity.HasKey(e => e.MediaId);
-                entity.Property(e => e.MediaTitle).IsRequired();
+                entity.Property(e => e.MediaTitle);
                 entity.Property(e => e.MediaLecturer);
                 entity.Property(e => e.MediaPath);
                 entity.Property(e => e.MediaDescription);

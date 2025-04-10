@@ -74,3 +74,4 @@ mono_crash.*
 AudioFiles/
 
 # End of default values
+/.claudiaideconfig

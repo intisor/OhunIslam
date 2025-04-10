@@ -8,12 +8,12 @@ namespace OhunIslam.WebAPI.Model
     public class MediaItem
     {
         public int MediaId { get; set; }
-        public string MediaTitle { get; set; }
-        public string MediaDescription { get; set; }
-        public string MediaLecturer { get; set; }
-        public string MediaPath { get; set; }
+        public string? MediaTitle { get; set; }
+        public string? MediaDescription { get; set; }
+        public string? MediaLecturer { get; set; }
+        public string? MediaPath { get; set; }
         [NotMapped]
-        public IFormFile MediaFile { get; set; }
+        public IFormFile? MediaFile { get; set; }
         public DateTime DateIssued { get; set; }
     }
 
@@ -21,11 +21,11 @@ namespace OhunIslam.WebAPI.Model
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public string MessageContent { get; set; }
+        public string? MessageContent { get; set; }
 
-        public string MediaTitle { get; set; }
+        public string? MediaTitle { get; set; }
         public DateTime StreamStartTime { get; set; }
-        public string StreamStatus { get; set; } // e.g., "Started", "Stopped"
+        public StreamStatus StreamStatus { get; set; } // Changed to property
         public TimeSpan StreamDuration { get; set; }
         public DateTime ReceivedAt { get; set; } = DateTime.Now;
 
@@ -33,11 +33,20 @@ namespace OhunIslam.WebAPI.Model
         {
             return new ConsumedMessage()
             {
-                MediaTitle = Status.MediaTitle,
+                MediaTitle = Status.MediaTitle!,
                 StreamStartTime = Status.StreamStartTime,
-                StreamStatus = Status.StreamStatus,
+                StreamStatus = Status.StreamStatus, // Fixed reference
                 StreamDuration = Status.StreamDuration
             };
         }
+    }
+
+    public class StreamStats
+    {
+        public int Id { get; set; }
+        public int TotalStreamsToday { get; set; }
+        public DateTime UpdateTime { get; set; }
+        public string? MessageContent { get; set; }
+        public DateTime ReceivedAt { get; set; }
     }
 }

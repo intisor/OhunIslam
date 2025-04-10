@@ -1,25 +1,63 @@
+using MassTransit;
+using OhunIslam.Radio.Services;
+using OhunIslam.Shared.Models;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+//builder.Logging.AddProvider(new FileLoggerProvider("RadioLogs.txt")); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Add services for controllers
 builder.Services.AddControllers();
-// Configure RabbitMQ
-builder.Services.AddSingleton<IConnectionFactory>(sp =>
-    new ConnectionFactory
+//builder.Services.AddSingleton<IConnectionFactory>(sp => new ConnectionFactory
+//{
+//    HostName = "localhost",
+//    Port = 5672,
+//    UserName = "guest",
+//    Password = "guest"
+//});
+//builder.Services.AddSingleton<MassTransitService>();
+
+//builder.Services.AddSingleton<AddRadioEventProcessor>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((MTcofig, RMconfig) =>
     {
-        HostName = "localhost",
-        Port = 5672,
-        UserName = "guest",
-        Password = "guest"
+        RMconfig.Host("localhost", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        RMconfig.Message<StreamStatsUpdate>(e => e.SetEntityName("radio_exchange"));
+        RMconfig.Publish<StreamStatsUpdate>(e =>
+        {
+            e.ExchangeType = ExchangeType.Direct;
+        });
+        RMconfig.ReceiveEndpoint("radio_streaming_queue", e =>
+        {
+            //e.ConfigureConsumeTopology = false;
+            e.Durable = true;
+            e.AutoDelete = false;
+            //e.Bind("radio_exchange", b =>
+            //{
+            //    b.RoutingKey = "streaming.status";
+            //    b.Durable = true;
+            //    b.AutoDelete = false;
+            //    b.ExchangeType = ExchangeType.Direct;
+            //});
+        });
+        RMconfig.Publish<RadioStreamingStatus>(e =>
+        {
+            e.ExchangeType = ExchangeType.Direct;
+        });
+        //RMconfig.Publish<StreamStatsUpdate>(e => e.ExchangeType = ExchangeType.Direct);
     });
-builder.Services.AddSingleton<RabbitMQService>();
-builder.Services.AddSingleton<AddRadioEventProcessor>();
+    x.AddRequestClient<StreamStatsUpdate>();
+});
+
+builder.Services.AddScoped<MassTransitService>();
+
 // Register IHttpClientFactory
 builder.Services.AddHttpClient();
 
@@ -41,7 +79,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapGet("/", async context =>
     {
-     context.Response.Redirect("/api/radio/play");
+        context.Response.Redirect("/api/radio/play");
     });
 });
 
