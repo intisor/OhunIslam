@@ -36,31 +36,29 @@
 Ohun Islam follows a **microservices architecture** pattern, ensuring scalability, fault tolerance, and ease of maintenance. The system consists of the following components:
 
 ```
-┌─────────────────┐
-│   API Gateway   │  (YARP Reverse Proxy)
-│   (YARPGateway) │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │         │
-┌───▼────┐ ┌──▼──────┐
-│ Radio  │ │ WebAPI  │
-│Service │ │ Service │
-└───┬────┘ └────┬────┘
-    │           │
-    └─────┬─────┘
-          │
-    ┌─────▼─────┐      ┌──────────────┐
-    │ RabbitMQ  │      │  SQL Server  │
-    │ (Message  │      │  (Database)  │
-    │   Bus)    │      └──────────────┘
-    └───────────┘
-         ▲
-         │
-    ┌────┴─────┐
-    │  Shared  │
-    │ Library  │
-    └──────────┘
+         ┌─────────────────┐
+         │   API Gateway   │  (YARP Reverse Proxy)
+         │   (YARPGateway) │
+         └────────┬────────┘
+                  │
+             ┌────┴────┐
+             │         │
+         ┌───▼────┐ ┌──▼──────┐
+         │ Radio  │ │ WebAPI  │
+         │Service │ │ Service │
+         └───┬────┘ └────┬────┘
+             │           │
+             └─────┬─────┘
+                   │
+             ┌─────▼─────┐      ┌──────────────┐
+             │ RabbitMQ  │      │  SQL Server  │
+             │ (Message  │      │  (Database)  │
+             │   Bus)    │      └──────▲───────┘
+             └───────────┘             │
+                                  (WebAPI only)
+
+Note: Both Radio and WebAPI services reference the Shared Library 
+for common models (RadioStreamingStatus, StreamStatsUpdate, etc.)
 ```
 
 ### Architecture Principles
@@ -240,6 +238,7 @@ docker ps
 
 Update the connection string in `OhunIslam.WebAPI/appsettings.json`:
 
+**For Development (Windows Integrated Security):**
 ```json
 {
   "ConnectionStrings": {
@@ -248,10 +247,17 @@ Update the connection string in `OhunIslam.WebAPI/appsettings.json`:
 }
 ```
 
-For SQL Server Authentication:
+**For SQL Server Authentication:**
 ```json
 "ConnectionString": "Server=YOUR_SERVER;Database=OhunIslam;User Id=YOUR_USER;Password=YOUR_PASSWORD;TrustServerCertificate=True;Encrypt=False;"
 ```
+
+**For Production (with encryption enabled):**
+```json
+"ConnectionString": "Server=YOUR_SERVER;Database=OhunIslam;User Id=YOUR_USER;Password=YOUR_PASSWORD;Encrypt=True;TrustServerCertificate=False;"
+```
+
+> **⚠️ Security Note**: The development examples disable encryption for local development convenience. For production deployments, always enable encryption (`Encrypt=True`) and use proper certificate validation (`TrustServerCertificate=False`).
 
 ### 4. Apply Database Migrations
 
@@ -400,6 +406,8 @@ services:
       - ohunislam-network
     restart: always
 ```
+
+> **⚠️ Security Warning**: The default credentials (guest/guest) are only suitable for local development. For production deployments, you **must** change these credentials and configure proper authentication. Update the environment variables and corresponding service configurations accordingly.
 
 ## API Documentation
 
@@ -551,11 +559,15 @@ Radio Service → RabbitMQ → WebAPI Service
    - Receives StreamStatsUpdate messages
    - Durable: Yes
    - Auto-delete: No
+   - Consumed by WebAPI service
 
-3. **queue_stats**
-   - Consumer endpoint for WebAPI
-   - Prefetch count: 1 (process one message at a time)
-   - Retry policy: 5 attempts with 10-second intervals
+#### WebAPI Consumer Configuration
+
+The WebAPI service consumes messages from `radio_streaming_queue` using the following configuration:
+
+- **Endpoint Name**: `queue_stats` (MassTransit consumer endpoint)
+- **Prefetch Count**: 1 (processes one message at a time)
+- **Retry Policy**: 5 attempts with 10-second intervals between retries
 
 #### Message Types
 
@@ -651,12 +663,26 @@ dotnet test
 
 ### Logging
 
-Logs are written to:
-- Console output (structured logging)
-- `WebAPILogs.txt` (WebAPI service - currently disabled)
-- `RadioLogs.txt` (Radio service - currently disabled)
+The application uses the built-in .NET logging infrastructure:
 
-To enable file logging, uncomment the file logger provider in `Program.cs`.
+- **Console output**: Structured logging to console (enabled by default)
+- **File logging**: Custom file logger implementation exists in the codebase but is currently disabled
+
+Log files referenced in the codebase (when enabled):
+- `WebAPILogs.txt` - WebAPI service logs
+- `RadioLogs.txt` - Radio service logs
+
+To enable file logging, you would need to implement and register a file logger provider in `Program.cs` of each service.
+
+**Log Levels** (configured in `appsettings.json`):
+```json
+"Logging": {
+  "LogLevel": {
+    "Default": "Information",
+    "Microsoft.AspNetCore": "Warning"
+  }
+}
+```
 
 ## Deployment
 
